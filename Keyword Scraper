@@ -1,0 +1,56 @@
+import pandas as pd
+
+keywords = {"systems change", "systemic change", "umbrella organisation", "civil society support", "influencing",
+            "infrastructure", "justice", "equity", "capability building", "building capability", "capabilities building",
+            "leadership Training", "capacity building", "build capability", "capabilities building", "leadership Training",
+            "build capacity", "building capacity", "movement building", "organising", "organizing", "grassroots", "grassroot",
+            "frontline", "community engagement", "fundraising", "business development", "legal support",
+            "workforce development", "leadership training", "network", "networking", "collaboration", "advocacy",
+            "research support", "learning support", "evaluation support", "protest", "pooled", "intersectionality",
+            "intersectional", "SYSTEMS CHANGE", "SYSTEMIC CHANGE", "UMBRELLA ORGANISATION", "CIVIL SOCIETY SUPPORT",
+            "INFLUENCING", "INFRASTRUCTURE", "JUSTICE", "EQUITY", "CAPABILITY BUILDING", "BUILDING CAPABILITY",
+            "CAPABILITIES BUILDING", "LEADERSHIP TRAINING", "CAPACITY BUILDING", "BUILD CAPABILITY", "CAPABILITIES BUILDING",
+            "LEADERSHIP TRAINING", "BUILD CAPACITY", "BUILDING CAPACITY", "MOVEMENT BUILDING", "ORGANISING", "ORGANIZING",
+            "GRASSROOTS", "GRASSROOT", "FRONTLINE", "COMMUNITY ENGAGEMENT", "FUNDRAISING", "BUSINESS DEVELOPMENT",
+            "LEGAL SUPPORT", "WORKFORCE DEVELOPMENT", "LEADERSHIP TRAINING", "NETWORK", "NETWORKING", "COLLABORATION",
+            "ADVOCACY", "RESEARCH SUPPORT", "LEARNING SUPPORT", "EVALUATION SUPPORT", "PROTEST", "POOLED", "INTERSECTIONALITY",
+            "INTERSECTIONAL", "Systems Change", "Systemic Change", "Umbrella Organisation", "Civil Society Support", "Influencing",
+            "Infrastructure", "Justice", "Equity", "Capability Building", "Building Capability", "Capabilities Building",
+            "Leadership Training", "Capacity Building", "Build Capability", "Capabilities Building", "Leadership Training",
+            "Build Capacity", "Building Capacity", "Movement Building", "Organising", "Organizing", "Grassroots", "Grassroot",
+            "Frontline", "Community Engagement", "Fundraising", "Business Development", "Legal Support", "Workforce Development",
+            "Leadership Training", "Network", "Networking", "Collaboration", "Advocacy", "Research Support", "Learning Support",
+            "Evaluation Support", "Protest", "Pooled", "Intersectionality", "Intersectional"}
+            # all your keywords case sensitive
+
+df = pd.read_csv("/content/360UKwide2019to24.csv", sep=",")
+
+listMatchTitle = []
+listMatchDescription = []
+listMatchIdentifier = []
+listMatchCurrency = []
+listMatchAmount = []
+listMatchAwardDate = []
+listMatchRecipient = []
+listMatchFunder = []
+listMatchRegion = []
+listMatchGprogram = []
+
+
+for i in range(len(df.index)):
+    if isinstance(df['Title'][i], str) and isinstance(df['Description'][i], str):
+      if any(x in df['Title'][i] or x in df['Description'][i] for x in keywords):
+        listMatchTitle.append(df['Title'][i])
+        listMatchDescription.append(df['Description'][i])
+        listMatchIdentifier.append(df['Identifier'][i])
+        listMatchCurrency.append(df['Currency'][i])
+        listMatchAmount.append(df['Amount'][i])
+        listMatchAwardDate.append(df['Award Date'][i])
+        listMatchRecipient.append(df['Recipient'][i])
+        listMatchFunder.append(df['Funder'][i])
+        listMatchRegion.append(df['Region'][i])
+        listMatchGprogram.append(df['Gprogram'][i])
+
+
+output = pd.DataFrame({'Identifier':listMatchIdentifier, 'Title':listMatchTitle, 'Description':listMatchDescription, 'Currency':listMatchCurrency, 'Amount Awarded':listMatchAmount, 'Award Date':listMatchAwardDate, 'Recipient Org':listMatchRecipient, 'Funding Org':listMatchFunder, 'Region':listMatchRegion, 'Gprogram':listMatchGprogram})
+output.to_csv("new_data.csv", index=False)
