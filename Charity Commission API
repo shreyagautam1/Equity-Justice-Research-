@@ -1,0 +1,54 @@
+import requests
+import json
+import pandas as pd
+import time
+
+# List of charity numbers you want to query
+charity_numbers = ["1156819", "1056043"
+]  # Replace with actual charity numbers
+
+# Your API key (replace with your actual key)
+api_key = "41d4843d65af4e95ae09a9e02f9d72b9"
+
+# Container for the results
+results = []
+
+# Loop over each charity number and query the API
+for charity_number in charity_numbers:
+    # Construct the URL for this charity number
+    url = f"https://api.charitycommission.gov.uk/register/api/charityfinancialhistory/{charity_number}/0"
+
+    # Set up headers including the API key
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": api_key
+    }
+
+    # Make the API request
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        # Optionally add the charity number to the data if not already present
+        if isinstance(data, list):
+            # If the API returns a list, add a field for charity number to each item
+            for item in data:
+                item["charity_number"] = charity_number
+            results.extend(data)
+        else:
+            # If it returns a dictionary, add it directly
+            data["charity_number"] = charity_number
+            results.append(data)
+    else:
+        print(f"Error for charity {charity_number}: {response.status_code}")
+
+    # Pause briefly to respect rate limiting (e.g. 0.5 sec between calls)
+    time.sleep(0.5)
+
+# Convert the results list into a pandas DataFrame
+df = pd.DataFrame(results)
+
+# Show a preview of the data
+print("Combined Charity Data:")
+print(df.head())
+df.to_csv("/content/output.csv", index=False)
